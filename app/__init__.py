@@ -20,12 +20,12 @@ def create_app(config_name='default'):
     from app.api.teacher import teacher_bp
     from app.api.admin import admin_bp
 
-    app.register_blueprint(auth_bp,    url_prefix='/api/v1/auth')
-    app.register_blueprint(teacher_bp, url_prefix='/api/v1/teacher')
-    app.register_blueprint(admin_bp,   url_prefix='/api/v1/admin')
+    app.register_blueprint(auth_bp,    url_prefix='/api/auth')
+    app.register_blueprint(teacher_bp, url_prefix='/api/teacher')
+    app.register_blueprint(admin_bp,   url_prefix='/api/admin')
 
     # Health check
-    @app.route('/api/v1/health')
+    @app.route('/api/health')
     def health():
         return {"status": "ok", "message": "TeachTrack API is running"}, 200
 
