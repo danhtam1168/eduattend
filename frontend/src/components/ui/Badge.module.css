@@ -1,0 +1,34 @@
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.2rem 0.65rem;
+  border-radius: var(--radius-full);
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+}
+
+.dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+/* Color variants */
+.present  { background: var(--color-present-bg);   color: var(--color-present-text); }
+.present .dot  { background: var(--color-present); }
+.absent   { background: var(--color-absent-bg);    color: var(--color-absent-text); }
+.absent .dot   { background: var(--color-absent); }
+.late     { background: var(--color-late-bg);      color: var(--color-late-text); }
+.late .dot     { background: var(--color-late); }
+.pending  { background: var(--color-pending-bg);   color: var(--color-pending-text); }
+.pending .dot  { background: var(--color-pending); }
+.confirmed{ background: var(--color-confirmed-bg); color: var(--color-confirmed-text); }
+.confirmed .dot{ background: var(--color-confirmed); }
+.cancelled{ background: var(--color-cancelled-bg); color: var(--color-cancelled-text); }
+.cancelled .dot{ background: var(--color-cancelled); }
+.primary  { background: var(--color-primary-light); color: var(--color-primary-dark); }
+.primary .dot  { background: var(--color-primary); }
