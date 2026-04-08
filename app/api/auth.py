@@ -28,7 +28,7 @@ def login():
         return error_response("Tài khoản đã bị khoá, vui lòng liên hệ admin", 401)
 
     # Tạo token
-    access_token = create_access_token(identity=user.id)
+    access_token = create_access_token(identity=str(user.id))
 
     return success_response({
         "access_token": access_token,

@@ -1,4 +1,5 @@
 from flask import Flask
+from flask_cors import CORS
 from app.config import config
 from app.extensions import db, migrate, jwt, bcrypt
 
@@ -6,6 +7,9 @@ from app.extensions import db, migrate, jwt, bcrypt
 def create_app(config_name='default'):
     app = Flask(__name__)
     app.config.from_object(config[config_name])
+
+    # Cấu hình CORS cho frontend Vite
+    CORS(app, resources={r"/api/*": {"origins": ["http://localhost:5173", "http://127.0.0.1:5173"]}})
 
     db.init_app(app)
     migrate.init_app(app, db)
