@@ -17,20 +17,53 @@ def create_app(config_name='default'):
     bcrypt.init_app(app)
 
     with app.app_context():
-        from app.models import User, SalaryRate, TeachingSession, Student, StudentAttendance
+        from app.models import (
+            Admin, Teacher, Student, Subject, Room, Class,
+            StudentClass, Schedule, TeacherAttendance, StudentAttendance,
+            MonthlyFee, Payment, TeacherSalary, SystemConfig, ActivityLog
+        )
 
-    # Đăng ký Blueprints
+    # ── Auth ──────────────────────────────────────────────────────────────────
     from app.api.auth import auth_bp
-    from app.api.teacher import teacher_bp
-    from app.api.admin import admin_bp
+    app.register_blueprint(auth_bp, url_prefix='/api/auth')
 
-    app.register_blueprint(auth_bp,    url_prefix='/api/auth')
-    app.register_blueprint(teacher_bp, url_prefix='/api/teacher')
-    app.register_blueprint(admin_bp,   url_prefix='/api/admin')
+    # ── Admin ─────────────────────────────────────────────────────────────────
+    from app.api.admin.dashboard import dashboard_bp
+    from app.api.admin.teachers import teachers_bp
+    from app.api.admin.students import students_bp
+    from app.api.admin.subjects import subjects_bp
+    from app.api.admin.rooms import rooms_bp
+    from app.api.admin.classes import classes_bp
+    from app.api.admin.schedules import schedules_bp
+    from app.api.admin.teacher_attendances import teacher_attendances_bp
+    from app.api.admin.monthly_fees import monthly_fees_bp
+    from app.api.admin.payments import payments_bp
+    from app.api.admin.teacher_salaries import teacher_salaries_bp
 
-    # Health check
+    app.register_blueprint(dashboard_bp,           url_prefix='/api/admin/dashboard')
+    app.register_blueprint(teachers_bp,            url_prefix='/api/admin/teachers')
+    app.register_blueprint(students_bp,            url_prefix='/api/admin/students')
+    app.register_blueprint(subjects_bp,            url_prefix='/api/admin/subjects')
+    app.register_blueprint(rooms_bp,               url_prefix='/api/admin/rooms')
+    app.register_blueprint(classes_bp,             url_prefix='/api/admin/classes')
+    app.register_blueprint(schedules_bp,           url_prefix='/api/admin/schedules')
+    app.register_blueprint(teacher_attendances_bp, url_prefix='/api/admin/teacher-attendances')
+    app.register_blueprint(monthly_fees_bp,        url_prefix='/api/admin/monthly-fees')
+    app.register_blueprint(payments_bp,            url_prefix='/api/admin/payments')
+    app.register_blueprint(teacher_salaries_bp,    url_prefix='/api/admin/teacher-salaries')
+
+    # ── Teacher ───────────────────────────────────────────────────────────────
+    from app.api.teacher.sessions import teacher_sessions_bp
+    from app.api.teacher.attendance import teacher_attendance_bp
+    from app.api.teacher.profile import teacher_profile_bp
+
+    app.register_blueprint(teacher_sessions_bp,   url_prefix='/api/teacher')
+    app.register_blueprint(teacher_attendance_bp,  url_prefix='/api/teacher')
+    app.register_blueprint(teacher_profile_bp,     url_prefix='/api/teacher')
+
+    # ── Health check ──────────────────────────────────────────────────────────
     @app.route('/api/health')
     def health():
-        return {"status": "ok", "message": "TeachTrack API is running"}, 200
+        return {"status": "ok", "version": "2.0", "message": "EduAttend API v2 is running"}, 200
 
     return app
