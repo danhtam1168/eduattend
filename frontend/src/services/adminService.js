@@ -57,6 +57,25 @@ export const adminService = {
     return res.data;
   },
 
+  // ── SCHEDULES / TIMETABLE ──
+  getSchedulesGrid: async (params = {}) => {
+    // params can include from_date, to_date, class_id
+    const res = await api.get('/api/admin/schedules', { params });
+    return res.data;
+  },
+  createSchedule: async (data) => {
+    const res = await api.post('/api/admin/schedules', data);
+    return res.data;
+  },
+  updateSchedule: async (id, data) => {
+    const res = await api.put(`/api/admin/schedules/${id}`, data);
+    return res.data;
+  },
+  deleteSchedule: async (id) => {
+    const res = await api.delete(`/api/admin/schedules/${id}`);
+    return res.data;
+  },
+
   // ── STUDENTS ──
   getStudents: async (class_name) => {
     const params = class_name ? { class_name } : {};

@@ -12,6 +12,7 @@ import Dashboard from './pages/admin/Dashboard/Dashboard';
 import Teachers from './pages/admin/Teachers/Teachers';
 import Students from './pages/admin/Students/Students';
 import Classes from './pages/admin/Classes/Classes';
+import Schedules from './pages/admin/Schedules/Schedules';
 import Sessions from './pages/admin/Sessions/Sessions';
 import SalaryReport from './pages/admin/SalaryReport/SalaryReport';
 import Settings from './pages/admin/Settings/Settings';
@@ -39,6 +40,7 @@ function App() {
           <Route path="teachers" element={<Teachers />} />
           <Route path="students" element={<Students />} />
           <Route path="classes" element={<Classes />} />
+          <Route path="schedules" element={<Schedules />} />
           <Route path="sessions" element={<Sessions />} />
           <Route path="salary-report" element={<SalaryReport />} />
           <Route path="settings" element={<Settings />} />
