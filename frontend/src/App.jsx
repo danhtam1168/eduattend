@@ -11,6 +11,7 @@ import Login from './pages/Login/Login';
 import Dashboard from './pages/admin/Dashboard/Dashboard';
 import Teachers from './pages/admin/Teachers/Teachers';
 import Students from './pages/admin/Students/Students';
+import Classes from './pages/admin/Classes/Classes';
 import Sessions from './pages/admin/Sessions/Sessions';
 import SalaryReport from './pages/admin/SalaryReport/SalaryReport';
 import Settings from './pages/admin/Settings/Settings';
@@ -37,6 +38,7 @@ function App() {
           <Route path="dashboard" element={<Dashboard />} />
           <Route path="teachers" element={<Teachers />} />
           <Route path="students" element={<Students />} />
+          <Route path="classes" element={<Classes />} />
           <Route path="sessions" element={<Sessions />} />
           <Route path="salary-report" element={<SalaryReport />} />
           <Route path="settings" element={<Settings />} />

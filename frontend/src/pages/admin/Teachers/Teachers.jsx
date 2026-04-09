@@ -9,7 +9,7 @@ import Input from '../../../components/ui/Input';
 import { adminService } from '../../../services/adminService';
 import styles from './Teachers.module.css';
 
-const initForm = { employee_id: '', full_name: '', phone: '', email: '', password: '' };
+const initForm = { username: '', full_name: '', phone: '', address: '', password: '' };
 
 const Teachers = () => {
   const [teachers, setTeachers] = useState([]);
@@ -26,7 +26,10 @@ const Teachers = () => {
     setLoading(true);
     try {
       const res = await adminService.getTeachers();
-      setTeachers(res.data || []);
+      setTeachers(res.data?.items || res.data || []);
+    } catch(e) {
+      console.error(e);
+      setTeachers([]);
     } finally { setLoading(false); }
   };
 
@@ -35,9 +38,9 @@ const Teachers = () => {
   useEffect(() => {
     const q = search.toLowerCase();
     setFiltered(teachers.filter(t =>
-      t.full_name.toLowerCase().includes(q) ||
-      t.employee_id.toLowerCase().includes(q) ||
-      (t.email || '').toLowerCase().includes(q)
+      t.full_name?.toLowerCase().includes(q) ||
+      t.username?.toLowerCase().includes(q) ||
+      t.teacher_code?.toLowerCase().includes(q)
     ));
   }, [search, teachers]);
 
@@ -49,8 +52,8 @@ const Teachers = () => {
 
   const handleSave = async (e) => {
     e.preventDefault();
-    if (!form.employee_id || !form.full_name) {
-      setError('Vui lòng nhập mã nhân viên và họ tên'); return;
+    if (!form.username || !form.full_name) {
+      setError('Vui lòng nhập tên đăng nhập và họ tên'); return;
     }
     if (!editItem && !form.password) {
       setError('Vui lòng nhập mật khẩu'); return;
@@ -59,7 +62,7 @@ const Teachers = () => {
     setError('');
     try {
       if (editItem) {
-        const payload = { full_name: form.full_name, phone: form.phone, email: form.email };
+        const payload = { full_name: form.full_name, phone: form.phone, address: form.address };
         if (form.password) payload.password = form.password;
         await adminService.updateTeacher(editItem.id, payload);
       } else {
@@ -82,30 +85,30 @@ const Teachers = () => {
     {
       key: 'full_name', title: 'Giáo viên',
       render: (v, row) => {
-        const initials = v?.split(' ').map(w => w[0]).slice(-2).join('').toUpperCase();
+        const initials = v?.split(' ').map(w => w[0]).slice(-2).join('').toUpperCase() || 'GV';
         return (
           <div className={styles.nameCell}>
             <div className={styles.avatar}>{initials}</div>
             <div>
               <div className={styles.teacherName}>{v}</div>
-              <div className={styles.teacherId}>{row.employee_id}</div>
+              <div className={styles.teacherId}>{row.teacher_code || row.username}</div>
             </div>
           </div>
         );
       }
     },
     { key: 'phone',  title: 'Điện thoại' },
-    { key: 'email',  title: 'Email' },
+    { key: 'address',  title: 'Địa chỉ' },
     {
-      key: 'is_active', title: 'Trạng thái',
-      render: (v) => <Badge color={v ? 'present' : 'absent'}>{v ? 'Hoạt động' : 'Khoá'}</Badge>
+      key: 'status', title: 'Trạng thái',
+      render: (v, row) => <Badge color={row.is_active ? 'present' : 'absent'}>{v === 'pending' ? 'Chờ duyệt' : (row.is_active ? 'Hoạt động' : 'Khoá')}</Badge>
     },
     {
       key: 'id', title: 'Thao tác', width: '120px',
       render: (_, row) => (
         <div style={{ display: 'flex', gap: '0.5rem' }}>
           <Button size="sm" variant="secondary" icon={<Edit2 size={13} />} onClick={() => openEdit(row)}>Sửa</Button>
-          {row.is_active &&
+          {row.is_active && row.status !== 'rejected' &&
             <Button size="sm" variant="ghost" icon={<Lock size={13} />} onClick={() => handleDeactivate(row)} />}
         </div>
       )
@@ -155,12 +158,12 @@ const Teachers = () => {
       >
         {error && <div style={{ color: 'var(--color-absent)', marginBottom: '1rem', fontSize: '0.875rem' }}>{error}</div>}
         <form className={styles.formGrid} onSubmit={handleSave}>
-          <Input label="Mã nhân viên" name="employee_id" value={form.employee_id} onChange={handleChange}
-            placeholder="VD: GV001" required disabled={!!editItem} />
+          <Input label="Username" name="username" value={form.username} onChange={handleChange}
+            placeholder="VD: teacher123" required disabled={!!editItem} />
           <Input label="Họ và tên" name="full_name" value={form.full_name} onChange={handleChange}
             placeholder="Nguyễn Văn A" required />
           <Input label="Điện thoại" name="phone" value={form.phone} onChange={handleChange} placeholder="0901..." />
-          <Input label="Email" name="email" type="email" value={form.email} onChange={handleChange} placeholder="gv@edu.vn" />
+          <Input label="Địa chỉ" name="address" value={form.address} onChange={handleChange} placeholder="Địa chỉ..." />
           <Input label={editItem ? 'Mật khẩu mới (để trống nếu không đổi)' : 'Mật khẩu'} name="password"
             type="password" value={form.password} onChange={handleChange}
             placeholder="Tối thiểu 6 ký tự" required={!editItem}

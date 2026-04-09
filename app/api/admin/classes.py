@@ -17,7 +17,7 @@ def get_classes():
         per_page = int(request.args.get('per_page', 20))
 
         items, total = ClassService.get_classes(status, teacher_id, subject_id, page, per_page)
-        return paginated_response([c.to_dict() for c in items], total, page, per_page)
+        return paginated_response([c.to_dict(include_students=True) for c in items], total, page, per_page)
     except Exception as e:
         return error_response(f"Lỗi hệ thống: {str(e)}", 500)
 

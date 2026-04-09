@@ -1,6 +1,12 @@
 import api from './api';
 
 export const adminService = {
+  // ── DASHBOARD ──
+  getDashboard: async () => {
+    const res = await api.get('/api/admin/dashboard');
+    return res.data;
+  },
+
   // ── TEACHERS ──
   getTeachers: async () => {
     const res = await api.get('/api/admin/teachers');
@@ -19,6 +25,38 @@ export const adminService = {
     return res.data;
   },
 
+  // ── SUBJECTS ──
+  getSubjects: async () => {
+    const res = await api.get('/api/admin/subjects');
+    return res.data;
+  },
+
+  // ── CLASSES ──
+  getClasses: async (params = {}) => {
+    const res = await api.get('/api/admin/classes', { params });
+    return res.data;
+  },
+  createClass: async (data) => {
+    const res = await api.post('/api/admin/classes', data);
+    return res.data;
+  },
+  updateClass: async (id, data) => {
+    const res = await api.put(`/api/admin/classes/${id}`, data);
+    return res.data;
+  },
+  getClassStudents: async (class_id) => {
+    const res = await api.get(`/api/admin/classes/${class_id}/students`);
+    return res.data;
+  },
+  enrollStudent: async (class_id, student_id) => {
+    const res = await api.post(`/api/admin/classes/${class_id}/students`, { student_id });
+    return res.data;
+  },
+  removeStudentFromClass: async (class_id, student_id) => {
+    const res = await api.delete(`/api/admin/classes/${class_id}/students/${student_id}`);
+    return res.data;
+  },
+
   // ── STUDENTS ──
   getStudents: async (class_name) => {
     const params = class_name ? { class_name } : {};
@@ -34,21 +72,21 @@ export const adminService = {
     return res.data;
   },
 
-  // ── SESSIONS ──
+  // ── SCHEDULES ──
   getSessions: async (params = {}) => {
-    const res = await api.get('/api/admin/sessions', { params });
+    const res = await api.get('/api/admin/schedules', { params });
     return res.data;
   },
   createSession: async (data) => {
-    const res = await api.post('/api/admin/sessions', data);
+    const res = await api.post('/api/admin/schedules', data);
     return res.data;
   },
   updateSession: async (id, data) => {
-    const res = await api.put(`/api/admin/sessions/${id}`, data);
+    const res = await api.put(`/api/admin/schedules/${id}`, data);
     return res.data;
   },
   cancelSession: async (id) => {
-    const res = await api.delete(`/api/admin/sessions/${id}`);
+    const res = await api.delete(`/api/admin/schedules/${id}`);
     return res.data;
   },
 

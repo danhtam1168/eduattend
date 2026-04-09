@@ -1,0 +1,127 @@
+.toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  gap: 1rem;
+}
+
+.searchWrap {
+  position: relative;
+  width: 300px;
+}
+
+.searchIcon {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #9CA3AF;
+}
+
+.searchInput {
+  width: 100%;
+  padding: 0.625rem 1rem 0.625rem 2.25rem;
+  border: 1px solid #E5E7EB;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  outline: none;
+  transition: all 0.2s;
+}
+
+.searchInput:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(37,99,235,0.1);
+}
+
+.formGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.inputGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.label {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #374151;
+}
+
+.select {
+  padding: 0.625rem 1rem;
+  border: 1px solid #D1D5DB;
+  border-radius: 6px;
+  font-size: 0.875rem;
+  background-color: #fff;
+  color: #111827;
+  outline: none;
+  transition: border-color 0.2s;
+  width: 100%;
+}
+
+.select:focus {
+  border-color: var(--color-primary);
+}
+
+.tableWrapper {
+  border: 1px solid #E5E7EB;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.miniTable {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  font-size: 0.875rem;
+}
+
+.miniTable th {
+  background: #F9FAFB;
+  padding: 0.75rem 1rem;
+  font-weight: 600;
+  color: #4B5563;
+  border-bottom: 1px solid #E5E7EB;
+}
+
+.miniTable td {
+  padding: 1rem;
+  border-bottom: 1px solid #E5E7EB;
+  color: #1F2937;
+}
+
+.miniTable tr:last-child td {
+  border-bottom: none;
+}
+
+.iconBtn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.25rem;
+  border-radius: 4px;
+}
+.iconBtn:hover {
+  background-color: #FEE2E2;
+}
+
+.nestedTable {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: #F9FAFB;
+  border-radius: 4px;
+}
+
+.nestedTable td {
+  padding: 0.25rem 0.5rem;
+  border-bottom: 1px dashed #E5E7EB;
+}
+
+.nestedTable tr:last-child td {
+  border-bottom: none;
+}

@@ -13,6 +13,7 @@ const adminLinks = [
   { to: '/admin/dashboard',     label: 'Dashboard',       icon: LayoutDashboard },
   { to: '/admin/teachers',      label: 'Giáo viên',       icon: Users },
   { to: '/admin/students',      label: 'Học sinh',         icon: GraduationCap },
+  { to: '/admin/classes',       label: 'Lớp học',          icon: Users },
   { to: '/admin/sessions',      label: 'Buổi dạy',         icon: CalendarDays },
   { section: 'BÁO CÁO' },
   { to: '/admin/salary-report', label: 'Báo cáo lương',   icon: FileText },

@@ -9,7 +9,7 @@ import styles from './Login.module.css';
 const Login = () => {
   const navigate = useNavigate();
   const { login } = useAuthStore();
-  const [form, setForm] = useState({ employee_id: '', password: '' });
+  const [form, setForm] = useState({ username: '', password: '' });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
@@ -20,13 +20,13 @@ const Login = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!form.employee_id || !form.password) {
+    if (!form.username || !form.password) {
       setError('Vui lòng nhập đầy đủ thông tin');
       return;
     }
     setLoading(true);
     try {
-      const data = await authService.login(form.employee_id, form.password);
+      const data = await authService.login(form.username, form.password);
       login(data.data.user, data.data.access_token);
       const role = data.data.user.role;
       navigate(role === 'admin' ? '/admin/dashboard' : '/teacher/sessions', { replace: true });
@@ -86,11 +86,11 @@ const Login = () => {
             )}
 
             <Input
-              label="Mã nhân viên"
-              name="employee_id"
-              value={form.employee_id}
+              label="Tên đăng nhập"
+              name="username"
+              value={form.username}
               onChange={handleChange}
-              placeholder="Nhập mã nhân viên..."
+              placeholder="Nhập username..."
               required
               disabled={loading}
             />

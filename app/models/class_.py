@@ -32,7 +32,7 @@ class Class(db.Model):
     teacher  = db.relationship('Teacher', backref='classes')
     room     = db.relationship('Room', backref='classes')
 
-    def to_dict(self, include_relations=True):
+    def to_dict(self, include_relations=True, include_students=False):
         data = {
             "id":               self.id,
             "class_name":       self.class_name,
@@ -67,4 +67,17 @@ class Class(db.Model):
                 "id":        self.room.id,
                 "room_name": self.room.room_name,
             } if self.room else None
+
+        if include_students:
+            active_students = []
+            for enrollment in self.enrollments:
+                if enrollment.status == 'active' and enrollment.student:
+                    # Tạm thời để trống lịch hoặc placeholder cho đến khi có schedule.
+                    active_students.append({
+                        "student_id": enrollment.student.id,
+                        "full_name":  enrollment.student.full_name,
+                        "schedule": "Chưa xếp lịch"
+                    })
+            data["students"] = active_students
+
         return data

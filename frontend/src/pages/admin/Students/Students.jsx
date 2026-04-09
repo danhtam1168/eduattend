@@ -9,7 +9,7 @@ import Input from '../../../components/ui/Input';
 import { adminService } from '../../../services/adminService';
 import styles from '../Teachers/Teachers.module.css';
 
-const initForm = { name: '', class_name: '', phone: '', note: '' };
+const initForm = { full_name: '', school: '', phone: '', notes: '' };
 
 const Students = () => {
   const [students, setStudents] = useState([]);
@@ -26,7 +26,10 @@ const Students = () => {
     setLoading(true);
     try {
       const res = await adminService.getStudents();
-      setStudents(res.data || []);
+      setStudents(res.data?.items || res.data || []);
+    } catch(e) {
+      console.error(e);
+      setStudents([]);
     } finally { setLoading(false); }
   };
 
@@ -34,8 +37,9 @@ const Students = () => {
   useEffect(() => {
     const q = search.toLowerCase();
     setFiltered(students.filter(s =>
-      s.name.toLowerCase().includes(q) ||
-      (s.class_name || '').toLowerCase().includes(q)
+      s.full_name?.toLowerCase().includes(q) ||
+      (s.school || '').toLowerCase().includes(q) ||
+      (s.student_code || '').toLowerCase().includes(q)
     ));
   }, [search, students]);
 
@@ -46,7 +50,7 @@ const Students = () => {
 
   const handleSave = async (e) => {
     e.preventDefault();
-    if (!form.name) { setError('Vui lòng nhập tên học sinh'); return; }
+    if (!form.full_name) { setError('Vui lòng nhập họ tên học sinh'); return; }
     setSaving(true); setError('');
     try {
       if (editItem) await adminService.updateStudent(editItem.id, form);
@@ -58,16 +62,16 @@ const Students = () => {
   };
 
   const handleToggle = async (s) => {
-    if (!window.confirm(`${s.is_active ? 'Khoá' : 'Kích hoạt'} học sinh "${s.name}"?`)) return;
-    await adminService.updateStudent(s.id, { is_active: !s.is_active });
+    if (!window.confirm(`${s.is_active ? 'Khoá' : 'Kích hoạt'} học sinh "${s.full_name}"?`)) return;
+    await adminService.deactivateStudent?.(s.id) || await adminService.updateStudent?.(s.id, { is_active: !s.is_active });
     load();
   };
 
   const columns = [
-    { key: 'name', title: 'Tên học sinh', render: (v) => <strong>{v}</strong> },
-    { key: 'class_name', title: 'Lớp / Khối' },
+    { key: 'full_name', title: 'Tên học sinh', render: (v, row) => <div><strong>{v}</strong><div style={{fontSize:'0.75rem', color:'#6b7280'}}>{row.student_code}</div></div> },
+    { key: 'school', title: 'Trường học' },
     { key: 'phone',      title: 'Điện thoại' },
-    { key: 'note',       title: 'Ghi chú' },
+    { key: 'notes',       title: 'Ghi chú' },
     {
       key: 'is_active', title: 'Trạng thái',
       render: (v) => <Badge color={v ? 'present' : 'absent'}>{v ? 'Đang học' : 'Nghỉ học'}</Badge>
@@ -105,10 +109,10 @@ const Students = () => {
         footer={<><Button variant="secondary" onClick={closeModal}>Huỷ</Button><Button loading={saving} onClick={handleSave}>Lưu</Button></>}>
         {error && <div style={{ color: 'var(--color-absent)', marginBottom: '1rem', fontSize: '0.875rem' }}>{error}</div>}
         <form className={styles.formGrid} onSubmit={handleSave}>
-          <Input label="Tên học sinh" name="name" value={form.name} onChange={handleChange} placeholder="Nguyễn Văn A" required className={styles.formFull} />
-          <Input label="Lớp / Khối" name="class_name" value={form.class_name} onChange={handleChange} placeholder="VD: Lớp 12" />
+          <Input label="Họ tên học sinh" name="full_name" value={form.full_name} onChange={handleChange} placeholder="Nguyễn Văn A" required className={styles.formFull} />
+          <Input label="Trường học" name="school" value={form.school} onChange={handleChange} placeholder="VD: THPT Chuyên" />
           <Input label="Điện thoại phụ huynh" name="phone" value={form.phone} onChange={handleChange} placeholder="0901..." />
-          <Input label="Ghi chú" name="note" value={form.note} onChange={handleChange} placeholder="Ghi chú..." className={styles.formFull} />
+          <Input label="Ghi chú" name="notes" value={form.notes} onChange={handleChange} placeholder="Ghi chú..." className={styles.formFull} />
         </form>
       </Modal>
     </>

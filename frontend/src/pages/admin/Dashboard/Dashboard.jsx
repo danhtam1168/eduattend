@@ -20,8 +20,8 @@ const StatCard = ({ icon: Icon, value, label, color, bg }) => (
 );
 
 const Dashboard = () => {
+  const [stats, setStats]         = useState(null);
   const [teachers, setTeachers]   = useState([]);
-  const [students, setStudents]   = useState([]);
   const [sessions, setSessions]   = useState([]);
   const [loading, setLoading]     = useState(true);
 
@@ -29,14 +29,15 @@ const Dashboard = () => {
     const load = async () => {
       try {
         const month = getCurrentMonth();
-        const [t, st, se] = await Promise.all([
+        const [dashRes, tRes, seRes] = await Promise.all([
+          adminService.getDashboard(),
           adminService.getTeachers(),
-          adminService.getStudents(),
           adminService.getSessions({ month, per_page: 10 }),
         ]);
-        setTeachers(t.data || []);
-        setStudents(st.data || []);
-        setSessions(se.data?.items || []);
+        
+        setStats(dashRes.data || null);
+        setTeachers(tRes.data?.items || tRes.data || []);
+        setSessions(seRes.data?.items || seRes.data || []);
       } catch (e) {
         console.error(e);
       } finally {
@@ -46,16 +47,16 @@ const Dashboard = () => {
     load();
   }, []);
 
-  const confirmedCount = sessions.filter(s => s.status === 'confirmed').length;
+  const confirmedCount = sessions.filter(s => s.status === 'confirmed' || s.status === 'completed').length;
 
   return (
     <div className={styles.page}>
       {/* Stats */}
       <div className={styles.statsGrid}>
-        <StatCard icon={Users}         value={loading ? '...' : teachers.length}  label="Giáo viên" color="#F2B43A" bg="#FFF8EC" />
-        <StatCard icon={GraduationCap} value={loading ? '...' : students.length}  label="Học sinh"  color="#3B82F6" bg="#DBEAFE" />
-        <StatCard icon={CalendarDays}  value={loading ? '...' : sessions.length}  label="Buổi dạy (tháng này)" color="#22C55E" bg="#DCFCE7" />
-        <StatCard icon={CheckCircle2}  value={loading ? '...' : confirmedCount}   label="Đã xác nhận" color="#8B5CF6" bg="#EDE9FE" />
+        <StatCard icon={Users}         value={loading ? '...' : (stats?.teachers?.total || 0)}  label="Giáo viên" color="#F2B43A" bg="#FFF8EC" />
+        <StatCard icon={GraduationCap} value={loading ? '...' : (stats?.students?.total || 0)}  label="Học sinh"  color="#3B82F6" bg="#DBEAFE" />
+        <StatCard icon={CalendarDays}  value={loading ? '...' : (stats?.this_month?.sessions || 0)}  label="Buổi dạy (tháng này)" color="#22C55E" bg="#DCFCE7" />
+        <StatCard icon={CheckCircle2}  value={loading ? '...' : confirmedCount}   label="Đã hoàn thành" color="#8B5CF6" bg="#EDE9FE" />
       </div>
 
       {/* Recent sessions + Teacher list */}
