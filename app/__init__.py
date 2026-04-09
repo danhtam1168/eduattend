@@ -20,7 +20,8 @@ def create_app(config_name='default'):
         from app.models import (
             Admin, Teacher, Student, Subject, Room, Class,
             StudentClass, Schedule, TeacherAttendance, StudentAttendance,
-            MonthlyFee, Payment, TeacherSalary, SystemConfig, ActivityLog
+            MonthlyFee, Payment, TeacherSalary, SystemConfig, ActivityLog,
+            ClassSchedule
         )
 
     # ── Auth ──────────────────────────────────────────────────────────────────
@@ -35,6 +36,7 @@ def create_app(config_name='default'):
     from app.api.admin.rooms import rooms_bp
     from app.api.admin.classes import classes_bp
     from app.api.admin.schedules import schedules_bp
+    from app.api.admin.class_schedules import class_schedules_bp
     from app.api.admin.teacher_attendances import teacher_attendances_bp
     from app.api.admin.monthly_fees import monthly_fees_bp
     from app.api.admin.payments import payments_bp
@@ -47,6 +49,7 @@ def create_app(config_name='default'):
     app.register_blueprint(rooms_bp,               url_prefix='/api/admin/rooms')
     app.register_blueprint(classes_bp,             url_prefix='/api/admin/classes')
     app.register_blueprint(schedules_bp,           url_prefix='/api/admin/schedules')
+    app.register_blueprint(class_schedules_bp,     url_prefix='/api/admin/class-schedules')
     app.register_blueprint(teacher_attendances_bp, url_prefix='/api/admin/teacher-attendances')
     app.register_blueprint(monthly_fees_bp,        url_prefix='/api/admin/monthly-fees')
     app.register_blueprint(payments_bp,            url_prefix='/api/admin/payments')

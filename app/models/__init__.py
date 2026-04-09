@@ -13,3 +13,4 @@ from app.models.payment import Payment
 from app.models.teacher_salary import TeacherSalary
 from app.models.system_config import SystemConfig
 from app.models.activity_log import ActivityLog
+from app.models.class_schedule import ClassSchedule
