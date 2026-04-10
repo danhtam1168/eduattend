@@ -25,6 +25,24 @@ export const adminService = {
     return res.data;
   },
 
+  // ── ROOMS ──
+  getRooms: async (params = {}) => {
+    const res = await api.get('/api/admin/rooms', { params });
+    return res.data;
+  },
+  createRoom: async (data) => {
+    const res = await api.post('/api/admin/rooms', data);
+    return res.data;
+  },
+  updateRoom: async (id, data) => {
+    const res = await api.put(`/api/admin/rooms/${id}`, data);
+    return res.data;
+  },
+  deleteRoom: async (id) => {
+    const res = await api.delete(`/api/admin/rooms/${id}`);
+    return res.data;
+  },
+
   // ── SUBJECTS ──
   getSubjects: async () => {
     const res = await api.get('/api/admin/subjects');
@@ -42,6 +60,10 @@ export const adminService = {
   },
   updateClass: async (id, data) => {
     const res = await api.put(`/api/admin/classes/${id}`, data);
+    return res.data;
+  },
+  deleteClass: async (id) => {
+    const res = await api.delete(`/api/admin/classes/${id}`);
     return res.data;
   },
   getClassStudents: async (class_id) => {
@@ -64,6 +86,11 @@ export const adminService = {
   },
   createClassSchedule: async (data) => {
     const res = await api.post('/api/admin/class-schedules', data);
+    return res.data;
+  },
+  createBulkClassSchedules: async (data) => {
+    // data = { class_id, schedules: [{ day_of_week, start_time, end_time, room_id }] }
+    const res = await api.post('/api/admin/class-schedules/bulk', data);
     return res.data;
   },
   deleteClassSchedule: async (id) => {

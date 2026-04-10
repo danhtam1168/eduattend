@@ -114,3 +114,16 @@ def remove_student(class_id, student_id):
     except Exception as e:
         db.session.rollback()
         return error_response(f"Lỗi hệ thống: {str(e)}", 500)
+
+@classes_bp.route('/<int:class_id>', methods=['DELETE'])
+@admin_required
+def delete_class(class_id):
+    from app.extensions import db
+    try:
+        ClassService.delete_class(class_id)
+        return success_response(message="Đã xoá lớp học")
+    except ValueError as e:
+        return error_response(str(e), 400)
+    except Exception as e:
+        db.session.rollback()
+        return error_response(f"Lỗi hệ thống: {str(e)}", 500)

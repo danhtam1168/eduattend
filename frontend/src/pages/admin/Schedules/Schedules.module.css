@@ -204,6 +204,10 @@
   transition: background-color 0.1s;
 }
 
+.gridCellDisabled {
+  cursor: not-allowed;
+}
+
 .gridCellClickable {
   cursor: pointer;
 }

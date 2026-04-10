@@ -2,7 +2,7 @@ import { NavLink, useNavigate } from 'react-router-dom';
 import {
   LayoutDashboard, Users, GraduationCap, CalendarDays,
   FileText, Settings, LogOut, BookOpen, ClipboardCheck,
-  User
+  User, Building2
 } from 'lucide-react';
 import clsx from 'clsx';
 import useAuthStore from '../../store/authStore';
@@ -14,6 +14,7 @@ const adminLinks = [
   { to: '/admin/teachers',      label: 'Giáo viên',       icon: Users },
   { to: '/admin/students',      label: 'Học sinh',         icon: GraduationCap },
   { to: '/admin/classes',       label: 'Lớp học',          icon: Users },
+  { to: '/admin/rooms',         label: 'Phòng học',        icon: Building2 },
   { to: '/admin/schedules',     label: 'Xếp lịch học',     icon: CalendarDays },
   { to: '/admin/sessions',      label: 'Buổi dạy',         icon: ClipboardCheck },
   { section: 'BÁO CÁO' },

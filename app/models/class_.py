@@ -32,7 +32,38 @@ class Class(db.Model):
     teacher  = db.relationship('Teacher', backref='classes')
     room     = db.relationship('Room', backref='classes')
 
+    def get_formatted_schedule(self):
+        schedule_templates = getattr(self, 'schedule_templates', None)
+        if not schedule_templates:
+            return "Chưa xếp lịch"
+        
+        from collections import defaultdict
+        groups = defaultdict(list)
+        for tpl in schedule_templates:
+            start_str = tpl.start_time.strftime('%H:%M') if getattr(tpl, 'start_time', None) else ''
+            end_str = tpl.end_time.strftime('%H:%M') if getattr(tpl, 'end_time', None) else ''
+            time_key = (start_str, end_str)
+            groups[time_key].append(tpl.day_of_week)
+            
+        day_map = {0: "2", 1: "3", 2: "4", 3: "5", 4: "6", 5: "7", 6: "CN"}
+        parts = []
+        for (start, end), days in groups.items():
+            days.sort()
+            days_str = ",".join(day_map.get(d, str(d)) for d in days)
+            format_time = start
+            if start:
+                h, m = start.split(':')
+                if m == '00':
+                    format_time = f"{int(h)}h"
+                else:
+                    format_time = f"{int(h)}h{m}"
+            
+            parts.append(f"{days_str} - {format_time}")
+            
+        return " và ".join(parts)
+
     def to_dict(self, include_relations=True, include_students=False):
+        formatted_sched = self.get_formatted_schedule()
         data = {
             "id":               self.id,
             "class_name":       self.class_name,
@@ -46,6 +77,7 @@ class Class(db.Model):
             "end_date":         self.end_date.isoformat() if self.end_date else None,
             "schedule_days":    self.schedule_days,
             "schedule_time":    self.schedule_time.strftime('%H:%M') if self.schedule_time else None,
+            "formatted_schedule": formatted_sched,
             "duration_minutes": self.duration_minutes,
             "status":           self.status,
             "notes":            self.notes,
@@ -70,13 +102,12 @@ class Class(db.Model):
 
         if include_students:
             active_students = []
-            for enrollment in self.enrollments:
-                if enrollment.status == 'active' and enrollment.student:
-                    # Tạm thời để trống lịch hoặc placeholder cho đến khi có schedule.
+            for enrollment in getattr(self, 'enrollments', []):
+                if enrollment.status == 'active' and getattr(enrollment, 'student', None):
                     active_students.append({
                         "student_id": enrollment.student.id,
                         "full_name":  enrollment.student.full_name,
-                        "schedule": "Chưa xếp lịch"
+                        "schedule": formatted_sched
                     })
             data["students"] = active_students
 

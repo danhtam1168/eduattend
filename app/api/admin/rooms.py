@@ -11,7 +11,10 @@ rooms_bp = Blueprint('admin_rooms', __name__)
 def get_rooms():
     try:
         status = request.args.get('status')
-        rooms = RoomService.get_rooms(status)
+        check_day = request.args.get('day_of_week')
+        check_start = request.args.get('start_time')
+        check_end = request.args.get('end_time')
+        rooms = RoomService.get_rooms(status, check_day, check_start, check_end)
         return success_response([r.to_dict() for r in rooms])
     except Exception as e:
         return error_response(f"Lỗi hệ thống: {str(e)}", 500)
@@ -47,6 +50,19 @@ def update_room(room_id):
     except ValueError as e:
         if "không tồn tại" in str(e).lower():
             return error_response(str(e), 404)
+        return error_response(str(e), 400)
+    except Exception as e:
+        db.session.rollback()
+        return error_response(f"Lỗi hệ thống: {str(e)}", 500)
+
+@rooms_bp.route('/<int:room_id>', methods=['DELETE'])
+@admin_required
+def delete_room(room_id):
+    from app.extensions import db
+    try:
+        RoomService.delete_room(room_id)
+        return success_response(message="Đã xoá phòng học")
+    except ValueError as e:
         return error_response(str(e), 400)
     except Exception as e:
         db.session.rollback()

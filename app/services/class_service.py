@@ -130,3 +130,17 @@ class ClassService:
         if cls and cls.current_students > 0:
             cls.current_students -= 1
         db.session.commit()
+
+    @staticmethod
+    def delete_class(class_id):
+        cls = Class.query.get(class_id)
+        if not cls:
+            raise ValueError("Lớp học không tồn tại")
+        
+        from sqlalchemy.exc import IntegrityError
+        try:
+            db.session.delete(cls)
+            db.session.commit()
+        except IntegrityError:
+            db.session.rollback()
+            raise ValueError("Không thể xoá lớp học đã có dữ liệu lịch, học viên hoặc ràng buộc hệ thống. Thay vào đó hãy đổi trạng thái thành Đã huỷ.")

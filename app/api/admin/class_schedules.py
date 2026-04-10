@@ -37,6 +37,24 @@ def create_template():
         db.session.rollback()
         return error_response(f"Lỗi hệ thống: {str(e)}", 500)
 
+@class_schedules_bp.route('/bulk', methods=['POST'])
+@admin_required
+def bulk_create_templates():
+    data = request.get_json()
+    errors = validate_required(data, ['class_id', 'schedules'])
+    if errors:
+        return error_response("Thiếu dữ liệu", 400, errors)
+
+    from app.extensions import db
+    try:
+        tpls = ClassScheduleService.bulk_create(data)
+        return success_response([t.to_dict() for t in tpls], "Đã chốt thời khóa biểu hàng tuần cho lớp.", 201)
+    except ValueError as e:
+        return error_response(str(e), 400)
+    except Exception as e:
+        db.session.rollback()
+        return error_response(f"Lỗi hệ thống: {str(e)}", 500)
+
 @class_schedules_bp.route('/<int:template_id>', methods=['DELETE'])
 @admin_required
 def delete_template(template_id):

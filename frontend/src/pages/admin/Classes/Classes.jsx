@@ -105,6 +105,17 @@ const Classes = () => {
     }
   };
 
+  const handleDelete = async (e, classId, className) => {
+    e.stopPropagation();
+    if (!window.confirm(`Bạn có chắc muốn xoá lớp học "${className}" không? Các dữ liệu đã sinh ra sẽ bị mất!`)) return;
+    try {
+      await adminService.deleteClass(classId);
+      loadData();
+    } catch (err) {
+      alert(err.response?.data?.message || 'Lỗi khi xoá lớp học');
+    }
+  };
+
   // --- QUẢN LÝ HỌC SINH ---
   const openManageStudents = async (c) => {
     setSelectedClass(c);
@@ -180,6 +191,7 @@ const Classes = () => {
         );
       }
     },
+    { key: 'formatted_schedule', title: 'Lịch học', render: (v) => <span style={{fontSize:'0.875rem', fontWeight:'500'}}>{v || 'Chưa xếp lịch'}</span> },
     { key: 'start_date', title: 'Khởi tạo', render: (v) => <span style={{fontSize:'0.875rem'}}>{v}</span> },
     {
       key: 'status', title: 'Trạng thái',
@@ -191,6 +203,7 @@ const Classes = () => {
         <div style={{ display: 'flex', gap: '0.5rem' }}>
           <Button size="sm" variant="secondary" icon={<Edit2 size={13} />} onClick={() => openEdit(row)}>Sửa</Button>
           <Button size="sm" variant="primary" icon={<Users size={13} />} onClick={() => openManageStudents(row)}>Học sinh</Button>
+          <Button size="sm" variant="ghost" icon={<Trash2 size={13} color="var(--color-absent)" />} onClick={(e) => handleDelete(e, row.id, row.class_name)} />
         </div>
       )
     }

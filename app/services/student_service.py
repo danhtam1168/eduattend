@@ -18,7 +18,7 @@ class StudentService:
 
     @staticmethod
     def get_students(status, search, page, per_page):
-        query = Student.query.filter_by(is_active=True)
+        query = Student.query
         if status:
             query = query.filter_by(status=status)
         if search:

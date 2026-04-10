@@ -50,6 +50,33 @@ class ClassScheduleService:
         return tpl
 
     @staticmethod
+    def bulk_create(data):
+        cls = Class.query.get(data['class_id'])
+        if not cls:
+            raise ValueError("Lớp học không tồn tại")
+
+        # Xóa mẫu cũ của lớp này (Overwrite theo toàn bộ tuần lưới)
+        ClassSchedule.query.filter_by(class_id=cls.id).delete()
+        
+        created = []
+        for s in data.get('schedules', []):
+            tpl = ClassSchedule(
+                class_id=cls.id,
+                day_of_week=s['day_of_week'],
+                start_time=time.fromisoformat(s['start_time']),
+                end_time=time.fromisoformat(s['end_time']),
+                room_id=s.get('room_id')
+            )
+            db.session.add(tpl)
+            created.append(tpl)
+            
+        db.session.commit()
+        
+        # Tạo schedule cứng
+        ClassScheduleService.generate_real_schedules(cls.id)
+        return created
+
+    @staticmethod
     def delete_template(template_id):
         tpl = ClassSchedule.query.get(template_id)
         if not tpl:
