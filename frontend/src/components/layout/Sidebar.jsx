@@ -14,6 +14,7 @@ const adminLinks = [
   { to: '/admin/teachers',      label: 'Giáo viên',       icon: Users },
   { to: '/admin/students',      label: 'Học sinh',         icon: GraduationCap },
   { to: '/admin/classes',       label: 'Lớp học',          icon: Users },
+  { to: '/admin/subjects',      label: 'Môn học',          icon: BookOpen },
   { to: '/admin/rooms',         label: 'Phòng học',        icon: Building2 },
   { to: '/admin/schedules',     label: 'Xếp lịch học',     icon: CalendarDays },
   { to: '/admin/sessions',      label: 'Buổi dạy',         icon: ClipboardCheck },

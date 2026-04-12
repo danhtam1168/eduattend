@@ -12,6 +12,7 @@ import Dashboard from './pages/admin/Dashboard/Dashboard';
 import Teachers from './pages/admin/Teachers/Teachers';
 import Students from './pages/admin/Students/Students';
 import Classes from './pages/admin/Classes/Classes';
+import Subjects from './pages/admin/Subjects/Subjects';
 import Rooms from './pages/admin/Rooms/Rooms';
 import Schedules from './pages/admin/Schedules/Schedules';
 import Sessions from './pages/admin/Sessions/Sessions';
@@ -41,6 +42,7 @@ function App() {
           <Route path="teachers" element={<Teachers />} />
           <Route path="students" element={<Students />} />
           <Route path="classes" element={<Classes />} />
+          <Route path="subjects" element={<Subjects />} />
           <Route path="rooms" element={<Rooms />} />
           <Route path="schedules" element={<Schedules />} />
           <Route path="sessions" element={<Sessions />} />

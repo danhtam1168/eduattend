@@ -48,6 +48,18 @@ export const adminService = {
     const res = await api.get('/api/admin/subjects');
     return res.data;
   },
+  createSubject: async (data) => {
+    const res = await api.post('/api/admin/subjects', data);
+    return res.data;
+  },
+  updateSubject: async (id, data) => {
+    const res = await api.put(`/api/admin/subjects/${id}`, data);
+    return res.data;
+  },
+  deleteSubject: async (id) => {
+    const res = await api.delete(`/api/admin/subjects/${id}`);
+    return res.data;
+  },
 
   // ── CLASSES ──
   getClasses: async (params = {}) => {
