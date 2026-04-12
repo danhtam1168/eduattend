@@ -24,7 +24,7 @@ class Student(db.Model):
     updated_at      = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
     # Self-referential relationship (giới thiệu bởi HS khác)
-    referred_student = db.relationship('Student', remote_side='Student.id', backref='referrals')
+    referrer = db.relationship('Student', remote_side='Student.id', backref='referrals')
 
     def to_dict(self):
         return {
@@ -33,6 +33,7 @@ class Student(db.Model):
             "full_name":       self.full_name,
             "date_of_birth":   self.date_of_birth.isoformat() if self.date_of_birth else None,
             "referred_by":     self.referred_by,
+            "referred_by_name": self.referrer.full_name if self.referrer else None,
             "address":         self.address,
             "parent_phone":    self.parent_phone,
             "phone":           self.phone,

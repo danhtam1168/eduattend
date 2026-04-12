@@ -9,7 +9,15 @@ import Input from '../../../components/ui/Input';
 import { adminService } from '../../../services/adminService';
 import styles from '../Teachers/Teachers.module.css';
 
-const initForm = { full_name: '', school: '', phone: '', notes: '' };
+const initForm = { 
+  full_name: '', 
+  date_of_birth: '', 
+  address: '', 
+  parent_phone: '', 
+  phone: '', 
+  notes: '', 
+  referred_by: '' 
+};
 
 const Students = () => {
   const [students, setStudents] = useState([]);
@@ -38,13 +46,26 @@ const Students = () => {
     const q = search.toLowerCase();
     setFiltered(students.filter(s =>
       s.full_name?.toLowerCase().includes(q) ||
-      (s.school || '').toLowerCase().includes(q) ||
+      (s.address || '').toLowerCase().includes(q) ||
       (s.student_code || '').toLowerCase().includes(q)
     ));
   }, [search, students]);
 
   const openCreate = () => { setEditItem(null); setForm(initForm); setError(''); setModalOpen(true); };
-  const openEdit = (s) => { setEditItem(s); setForm(s); setError(''); setModalOpen(true); };
+  const openEdit = (s) => { 
+    setEditItem(s); 
+    setForm({
+      ...s,
+      date_of_birth: s.date_of_birth || '',
+      address: s.address || '',
+      parent_phone: s.parent_phone || '',
+      phone: s.phone || '',
+      referred_by: s.referred_by || '',
+      notes: s.notes || ''
+    }); 
+    setError(''); 
+    setModalOpen(true); 
+  };
   const closeModal = () => { setModalOpen(false); setError(''); };
   const handleChange = (e) => setForm(p => ({ ...p, [e.target.name]: e.target.value }));
 
@@ -68,9 +89,33 @@ const Students = () => {
   };
 
   const columns = [
-    { key: 'full_name', title: 'Tên học sinh', render: (v, row) => <div><strong>{v}</strong><div style={{fontSize:'0.75rem', color:'#6b7280'}}>{row.student_code}</div></div> },
-    { key: 'school', title: 'Trường học' },
-    { key: 'phone',      title: 'Điện thoại' },
+    { 
+      key: 'full_name', 
+      title: 'Tên học sinh', 
+      render: (v, row) => (
+        <div>
+          <strong>{v}</strong>
+          {row.referred_by_name && (
+            <div style={{ fontSize: '0.75rem', color: 'var(--color-present)', fontStyle: 'italic', marginTop: '2px' }}>
+              ({row.referred_by_name})
+            </div>
+          )}
+          <div style={{ fontSize: '0.7rem', color: '#9ca3af', marginTop: '2px' }}>{row.student_code}</div>
+        </div>
+      ) 
+    },
+    { key: 'date_of_birth', title: 'Ngày sinh', render: (v) => v ? new Date(v).toLocaleDateString('vi-VN') : '-' },
+    { key: 'address', title: 'Địa chỉ' },
+    { 
+      key: 'contact', 
+      title: 'Liên hệ', 
+      render: (_, r) => (
+        <div style={{ fontSize: '0.875rem' }}>
+          <div>P: {r.parent_phone || '-'}</div>
+          <div>S: {r.phone || '-'}</div>
+        </div>
+      ) 
+    },
     { key: 'notes',       title: 'Ghi chú' },
     {
       key: 'is_active', title: 'Trạng thái',
@@ -110,8 +155,24 @@ const Students = () => {
         {error && <div style={{ color: 'var(--color-absent)', marginBottom: '1rem', fontSize: '0.875rem' }}>{error}</div>}
         <form className={styles.formGrid} onSubmit={handleSave}>
           <Input label="Họ tên học sinh" name="full_name" value={form.full_name} onChange={handleChange} placeholder="Nguyễn Văn A" required className={styles.formFull} />
-          <Input label="Trường học" name="school" value={form.school} onChange={handleChange} placeholder="VD: THPT Chuyên" />
-          <Input label="Điện thoại phụ huynh" name="phone" value={form.phone} onChange={handleChange} placeholder="0901..." />
+          <Input label="Ngày sinh" name="date_of_birth" type="date" value={form.date_of_birth} onChange={handleChange} />
+          <Input label="Địa chỉ" name="address" value={form.address} onChange={handleChange} placeholder="Địa chỉ nhà / Trường học" />
+          <Input label="Điện thoại phụ huynh" name="parent_phone" value={form.parent_phone} onChange={handleChange} placeholder="0901..." />
+          <Input label="Điện thoại cá nhân" name="phone" value={form.phone} onChange={handleChange} placeholder="0868..." />
+          
+          <div className={styles.inputGroup}>
+            <label className={styles.label}>Người giới thiệu (Không bắt buộc)</label>
+            <select name="referred_by" value={form.referred_by} onChange={handleChange} className={styles.select}>
+              <option value="">-- Không có / Bỏ trống --</option>
+              {students
+                .filter(s => s.id !== editItem?.id)
+                .map(s => (
+                  <option key={s.id} value={s.id}>{s.full_name} ({s.student_code})</option>
+                ))
+              }
+            </select>
+          </div>
+
           <Input label="Ghi chú" name="notes" value={form.notes} onChange={handleChange} placeholder="Ghi chú..." className={styles.formFull} />
         </form>
       </Modal>

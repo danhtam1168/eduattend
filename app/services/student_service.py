@@ -30,11 +30,20 @@ class StudentService:
 
     @staticmethod
     def create_student(data):
+        referred_by = data.get('referred_by')
+        if referred_by:
+            # Check if referrer exists
+            referrer = Student.query.get(referred_by)
+            if not referrer:
+                raise ValueError("Người giới thiệu không tồn tại")
+        else:
+            referred_by = None
+
         student = Student(
             student_code=StudentService._generate_student_code(),
             full_name=data['full_name'].strip(),
             date_of_birth=data.get('date_of_birth'),
-            referred_by=data.get('referred_by'),
+            referred_by=referred_by,
             address=data.get('address', ''),
             parent_phone=data.get('parent_phone', ''),
             phone=data.get('phone', ''),
@@ -62,7 +71,18 @@ class StudentService:
                     'parent_phone', 'phone', 'status', 'notes', 'is_active']
         for field in editable:
             if field in data:
-                setattr(student, field, data[field])
+                val = data[field]
+                if field == 'referred_by':
+                    if not val:
+                        val = None
+                    else:
+                        if int(val) == student_id:
+                            raise ValueError("Học sinh không thể tự giới thiệu chính mình")
+                        referrer = Student.query.get(val)
+                        if not referrer:
+                            raise ValueError("Người giới thiệu không tồn tại")
+                
+                setattr(student, field, val)
 
         db.session.commit()
         return student

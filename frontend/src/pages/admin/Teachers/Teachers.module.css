@@ -51,3 +51,32 @@
 
 .formGrid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
 .formFull { grid-column: 1 / -1; }
+
+.inputGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.label {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #374151;
+}
+
+.select {
+  padding: 0.625rem 1rem;
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-sm);
+  background-color: var(--color-surface);
+  color: var(--color-text);
+  outline: none;
+  transition: border-color var(--transition-fast);
+  width: 100%;
+  font-family: var(--font-family);
+}
+
+.select:focus {
+  border-color: var(--color-primary);
+}
