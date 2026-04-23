@@ -107,7 +107,16 @@ const Classes = () => {
 
   const handleDelete = async (e, classId, className) => {
     e.stopPropagation();
-    if (!window.confirm(`Bạn có chắc muốn xoá lớp học "${className}" không? Các dữ liệu đã sinh ra sẽ bị mất!`)) return;
+    const confirmed = window.confirm(
+      `⚠️ Xác nhận xoá lớp học "${className}"?\n\n` +
+      `Thao tác này sẽ xoá toàn bộ dữ liệu liên quan:\n` +
+      `  • Danh sách học sinh đăng ký\n` +
+      `  • Điểm danh học sinh & giáo viên\n` +
+      `  • Lịch học & khung thời khoá biểu\n` +
+      `  • Học phí hàng tháng & lịch sử thanh toán\n\n` +
+      `Dữ liệu sẽ KHÔNG thể khôi phục. Bạn có chắc chắn?`
+    );
+    if (!confirmed) return;
     try {
       await adminService.deleteClass(classId);
       loadData();

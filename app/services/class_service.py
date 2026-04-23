@@ -136,11 +136,32 @@ class ClassService:
         cls = Class.query.get(class_id)
         if not cls:
             raise ValueError("Lớp học không tồn tại")
-        
-        from sqlalchemy.exc import IntegrityError
+
         try:
+            from app.models.student_attendance import StudentAttendance
+            StudentAttendance.query.filter_by(class_id=class_id).delete(synchronize_session=False)
+
+            from app.models.teacher_attendance import TeacherAttendance
+            TeacherAttendance.query.filter_by(class_id=class_id).delete(synchronize_session=False)
+
+            from app.models.monthly_fee import MonthlyFee
+            from app.models.payment import Payment
+            fee_ids = [f.id for f in MonthlyFee.query.filter_by(class_id=class_id).all()]
+            if fee_ids:
+                Payment.query.filter(Payment.fee_id.in_(fee_ids)).delete(synchronize_session=False)
+
+            MonthlyFee.query.filter_by(class_id=class_id).delete(synchronize_session=False)
+
+            from app.models.schedule import Schedule
+            Schedule.query.filter_by(class_id=class_id).delete(synchronize_session=False)
+            from app.models.class_schedule import ClassSchedule
+            ClassSchedule.query.filter_by(class_id=class_id).delete(synchronize_session=False)
+
+            StudentClass.query.filter_by(class_id=class_id).delete(synchronize_session=False)
+
             db.session.delete(cls)
             db.session.commit()
-        except IntegrityError:
+
+        except Exception as e:
             db.session.rollback()
-            raise ValueError("Không thể xoá lớp học đã có dữ liệu lịch, học viên hoặc ràng buộc hệ thống. Thay vào đó hãy đổi trạng thái thành Đã huỷ.")
+            raise ValueError(f"Không thể xoá lớp học: {str(e)}")
